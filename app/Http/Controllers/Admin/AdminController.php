@@ -82,23 +82,43 @@ class AdminController extends Controller
         $apiKey    = config('services.cloudinary.api_key');
         $apiSecret = config('services.cloudinary.api_secret');
 
-        if (!$cloudName || !$apiKey || !$apiSecret) return null;
+        if (!$cloudName || !$apiKey || !$apiSecret) {
+            \Illuminate\Support\Facades\Log::error('Cloudinary: missing config', [
+                'cloud_name' => $cloudName ? 'set' : 'MISSING',
+                'api_key'    => $apiKey    ? 'set' : 'MISSING',
+                'api_secret' => $apiSecret ? 'set' : 'MISSING',
+            ]);
+            return null;
+        }
 
         $timestamp = time();
         $params    = ['folder' => 'praisestore', 'timestamp' => $timestamp];
         ksort($params);
         $signature = sha1(http_build_query($params) . $apiSecret);
 
-        $response = \Illuminate\Support\Facades\Http::timeout(30)->attach(
-            'file', file_get_contents($file->getRealPath()), $file->getClientOriginalName()
-        )->post("https://api.cloudinary.com/v1_1/{$cloudName}/image/upload", [
-            'api_key'   => $apiKey,
-            'timestamp' => $timestamp,
-            'folder'    => 'praisestore',
-            'signature' => $signature,
-        ]);
+        try {
+            $response = \Illuminate\Support\Facades\Http::timeout(30)->attach(
+                'file', file_get_contents($file->getRealPath()), $file->getClientOriginalName()
+            )->post("https://api.cloudinary.com/v1_1/{$cloudName}/image/upload", [
+                'api_key'   => $apiKey,
+                'timestamp' => $timestamp,
+                'folder'    => 'praisestore',
+                'signature' => $signature,
+            ]);
 
-        return $response->successful() ? $response->json('secure_url') : null;
+            if ($response->successful()) {
+                return $response->json('secure_url');
+            }
+
+            \Illuminate\Support\Facades\Log::error('Cloudinary upload failed', [
+                'status' => $response->status(),
+                'body'   => $response->body(),
+            ]);
+            return null;
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Cloudinary exception: ' . $e->getMessage());
+            return null;
+        }
     }
 
     public function storeProduct(Request $request)
