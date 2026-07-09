@@ -3,12 +3,13 @@ set -e
 
 cd /var/www/html
 
-# Run migrations and seed on first deploy
+# Clear any cached config to ensure env vars are read fresh
+php artisan config:clear
+php artisan cache:clear
+
+# Run migrations and seed
 php artisan migrate --force
 php artisan db:seed --force
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
 
 # Start supervisor (nginx + php-fpm)
 exec /usr/bin/supervisord -c /etc/supervisord.conf
