@@ -31,9 +31,9 @@ class AdminController extends Controller
 
         $monthlyRevenue = Order::where('status', '!=', 'cancelled')
             ->where('created_at', '>=', now()->subMonths(6))
-            ->selectRaw('MONTH(created_at) as month, YEAR(created_at) as year, SUM(total) as total')
-            ->groupByRaw('YEAR(created_at), MONTH(created_at)')
-            ->orderByRaw('YEAR(created_at), MONTH(created_at)')
+            ->selectRaw('EXTRACT(MONTH FROM created_at) as month, EXTRACT(YEAR FROM created_at) as year, SUM(total) as total')
+            ->groupByRaw('EXTRACT(YEAR FROM created_at), EXTRACT(MONTH FROM created_at)')
+            ->orderByRaw('EXTRACT(YEAR FROM created_at), EXTRACT(MONTH FROM created_at)')
             ->get();
 
         $topProducts = OrderItem::selectRaw('product_name, SUM(quantity) as total_sold, SUM(subtotal) as revenue')
