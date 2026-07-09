@@ -394,6 +394,13 @@ document.getElementById('productForm').addEventListener('submit', function() {
     btn.style.opacity = '0.8';
     icon.className = 'fas fa-spinner fa-spin';
     text.textContent = 'Saving… please wait';
+    // Re-enable after 40s in case of timeout
+    setTimeout(() => {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        icon.className = 'fas fa-{{ isset($product) ? "save" : "plus-circle" }}';
+        text.textContent = '{{ isset($product) ? "Update Product" : "Create Product" }}';
+    }, 40000);
 });
 
 // ── INIT ─────────────────────────────────────────────────────

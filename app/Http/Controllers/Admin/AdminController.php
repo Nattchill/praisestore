@@ -89,7 +89,7 @@ class AdminController extends Controller
         ksort($params);
         $signature = sha1(http_build_query($params) . $apiSecret);
 
-        $response = \Illuminate\Support\Facades\Http::attach(
+        $response = \Illuminate\Support\Facades\Http::timeout(30)->attach(
             'file', file_get_contents($file->getRealPath()), $file->getClientOriginalName()
         )->post("https://api.cloudinary.com/v1_1/{$cloudName}/image/upload", [
             'api_key'   => $apiKey,
