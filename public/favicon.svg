@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="ig" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f09433"/>
+      <stop offset="25%" stop-color="#e6683c"/>
+      <stop offset="50%" stop-color="#dc2743"/>
+      <stop offset="75%" stop-color="#cc2366"/>
+      <stop offset="100%" stop-color="#bc1888"/>
+    </linearGradient>
+  </defs>
+  <!-- Rounded square background -->
+  <rect width="64" height="64" rx="14" ry="14" fill="url(#ig)"/>
+  <!-- Store/shop bag icon (centered) -->
+  <g transform="translate(13, 11)" fill="white">
+    <!-- Bag handle -->
+    <path d="M12 6 C12 3 14 1 17 1 C20 1 22 3 22 6" stroke="white" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <!-- Bag body -->
+    <rect x="5" y="8" width="24" height="20" rx="3" ry="3" fill="white"/>
+    <!-- Store lines inside bag -->
+    <rect x="10" y="14" width="14" height="2.5" rx="1.2" fill="url(#ig)"/>
+    <rect x="10" y="19" width="10" height="2.5" rx="1.2" fill="url(#ig)"/>
+  </g>
+</svg>
