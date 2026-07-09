@@ -12,6 +12,7 @@ RUN apk add --no-cache \
     zip \
     unzip \
     postgresql-client \
+    libpq-dev \
     supervisor
 
 # Install PHP extensions
