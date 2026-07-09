@@ -76,6 +76,31 @@ class AdminController extends Controller
         return view('admin.product-form', compact('categories'));
     }
 
+    private function uploadToCloudinary($file): ?string
+    {
+        $cloudName = config('services.cloudinary.cloud_name');
+        $apiKey    = config('services.cloudinary.api_key');
+        $apiSecret = config('services.cloudinary.api_secret');
+
+        if (!$cloudName || !$apiKey || !$apiSecret) return null;
+
+        $timestamp = time();
+        $params    = ['folder' => 'praisestore', 'timestamp' => $timestamp];
+        ksort($params);
+        $signature = sha1(http_build_query($params) . $apiSecret);
+
+        $response = \Illuminate\Support\Facades\Http::attach(
+            'file', file_get_contents($file->getRealPath()), $file->getClientOriginalName()
+        )->post("https://api.cloudinary.com/v1_1/{$cloudName}/image/upload", [
+            'api_key'   => $apiKey,
+            'timestamp' => $timestamp,
+            'folder'    => 'praisestore',
+            'signature' => $signature,
+        ]);
+
+        return $response->successful() ? $response->json('secure_url') : null;
+    }
+
     public function storeProduct(Request $request)
     {
         $data = $request->validate([
@@ -92,7 +117,7 @@ class AdminController extends Controller
         ]);
 
         if ($request->hasFile('image_file')) {
-            $data['image'] = '/storage/' . $request->file('image_file')->store('products', 'public');
+            $data['image'] = $this->uploadToCloudinary($request->file('image_file')) ?? null;
         } elseif (empty($data['image'])) {
             $data['image'] = null;
         }
@@ -127,14 +152,8 @@ class AdminController extends Controller
         ]);
 
         if ($request->hasFile('image_file')) {
-            // Delete old uploaded image if it exists
-            if ($product->image && str_starts_with($product->image, '/storage/')) {
-                $old = str_replace('/storage/', '', $product->image);
-                \Illuminate\Support\Facades\Storage::disk('public')->delete($old);
-            }
-            $data['image'] = '/storage/' . $request->file('image_file')->store('products', 'public');
+            $data['image'] = $this->uploadToCloudinary($request->file('image_file')) ?? $product->image;
         } elseif (empty($data['image'])) {
-            // Keep existing image if no new file and no URL provided
             $data['image'] = $product->image;
         }
         unset($data['image_file']);
