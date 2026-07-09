@@ -13,12 +13,14 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        User::create([
-            'name'     => 'David',
-            'email'    => 'davidfnatt2002@gmail.com',
-            'password' => Hash::make('0778268118'),
-            'is_admin' => true,
-        ]);
+        User::firstOrCreate(
+            ['email' => 'davidfnatt2002@gmail.com'],
+            [
+                'name'     => 'David',
+                'password' => Hash::make('0778268118'),
+                'is_admin' => true,
+            ]
+        );
 
         $categories = [
             ['name' => 'Women', 'slug' => 'women', 'image' => 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=400'],
@@ -28,7 +30,7 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($categories as $cat) {
-            Category::create($cat);
+            Category::firstOrCreate(['slug' => $cat['slug']], $cat);
         }
 
         $products = [
