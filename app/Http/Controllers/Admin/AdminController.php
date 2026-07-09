@@ -117,7 +117,11 @@ class AdminController extends Controller
         ]);
 
         if ($request->hasFile('image_file')) {
-            $data['image'] = $this->uploadToCloudinary($request->file('image_file')) ?? null;
+            $url = $this->uploadToCloudinary($request->file('image_file'));
+            if (!$url) {
+                return back()->withInput()->with('error', 'Image upload to Cloudinary failed. Check that CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET are set in your environment.');
+            }
+            $data['image'] = $url;
         } elseif (empty($data['image'])) {
             $data['image'] = null;
         }
@@ -152,7 +156,11 @@ class AdminController extends Controller
         ]);
 
         if ($request->hasFile('image_file')) {
-            $data['image'] = $this->uploadToCloudinary($request->file('image_file')) ?? $product->image;
+            $url = $this->uploadToCloudinary($request->file('image_file'));
+            if (!$url) {
+                return back()->withInput()->with('error', 'Image upload to Cloudinary failed. Check that CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, and CLOUDINARY_API_SECRET are set in your environment.');
+            }
+            $data['image'] = $url;
         } elseif (empty($data['image'])) {
             $data['image'] = $product->image;
         }
