@@ -137,7 +137,7 @@
         </div>
         @endif
 
-        <button type="submit" class="btn-submit"><i class="fas fa-user-plus"></i> Create Account</button>
+        <button type="submit" class="btn-submit" onclick="this.disabled=true;this.form.submit()"><i class="fas fa-user-plus" style="pointer-events:none"></i> Create Account</button>
     </form>
 
     <div class="divider">or sign up with</div>
