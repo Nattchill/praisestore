@@ -78,16 +78,21 @@ class AdminController extends Controller
 
     private function uploadToCloudinary($file): ?string
     {
-        $cloudName = config('services.cloudinary.cloud_name');
-        $apiKey    = config('services.cloudinary.api_key');
-        $apiSecret = config('services.cloudinary.api_secret');
+        // Parse from CLOUDINARY_URL=cloudinary://api_key:api_secret@cloud_name
+        $url = env('CLOUDINARY_URL');
+        if ($url) {
+            $parts     = parse_url($url);
+            $cloudName = ltrim($parts['host'] ?? '', '@');
+            $apiKey    = $parts['user'] ?? null;
+            $apiSecret = $parts['pass'] ?? null;
+        } else {
+            $cloudName = config('services.cloudinary.cloud_name');
+            $apiKey    = config('services.cloudinary.api_key');
+            $apiSecret = config('services.cloudinary.api_secret');
+        }
 
         if (!$cloudName || !$apiKey || !$apiSecret) {
-            \Illuminate\Support\Facades\Log::error('Cloudinary: missing config', [
-                'cloud_name' => $cloudName ? 'set' : 'MISSING',
-                'api_key'    => $apiKey    ? 'set' : 'MISSING',
-                'api_secret' => $apiSecret ? 'set' : 'MISSING',
-            ]);
+            \Illuminate\Support\Facades\Log::error('Cloudinary: missing config');
             return null;
         }
 
