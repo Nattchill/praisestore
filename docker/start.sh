@@ -17,5 +17,8 @@ php artisan cache:clear
 php artisan migrate --force
 php artisan db:seed --force
 
+# Create storage symlink
+php artisan storage:link --force
+
 # Start supervisor (nginx + php-fpm)
 exec /usr/bin/supervisord -c /etc/supervisord.conf
