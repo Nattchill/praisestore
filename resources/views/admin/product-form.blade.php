@@ -153,7 +153,7 @@
                     <div id="uploadContent">
                         <i class="fas fa-cloud-upload-alt" style="font-size:36px;color:var(--primary);opacity:.7;margin-bottom:10px;display:block"></i>
                         <p style="font-size:14px;font-weight:600;color:var(--dark);margin-bottom:4px">Click to upload or drag & drop</p>
-                        <p style="font-size:12px;color:var(--gray)">JPG, PNG, WEBP — max 2MB</p>
+                        <p style="font-size:12px;color:var(--gray)">JPG, PNG, WEBP — max 10MB</p>
                     </div>
                     <div id="uploadPreviewWrap" style="display:none">
                         <img id="uploadPreview" style="max-height:200px;max-width:100%;border-radius:8px;object-fit:contain" alt="Preview">
@@ -219,9 +219,9 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary" style="width:100%;padding:12px;font-size:14px;justify-content:center">
-                    <i class="fas fa-{{ isset($product) ? 'save' : 'plus-circle' }}"></i>
-                    {{ isset($product) ? 'Update Product' : 'Create Product' }}
+                <button type="submit" id="submitBtn" class="btn btn-primary" style="width:100%;padding:12px;font-size:14px;justify-content:center">
+                    <i class="fas fa-{{ isset($product) ? 'save' : 'plus-circle' }}" id="submitIcon"></i>
+                    <span id="submitText">{{ isset($product) ? 'Update Product' : 'Create Product' }}</span>
                 </button>
                 <a href="{{ route('admin.products') }}" class="btn btn-secondary" style="width:100%;margin-top:8px;justify-content:center">
                     Cancel
@@ -384,6 +384,17 @@ function calcDiscount() {
         badge.classList.add('hidden');
     }
 }
+
+// ── SUBMIT LOADING STATE ─────────────────────────────────────
+document.getElementById('productForm').addEventListener('submit', function() {
+    const btn  = document.getElementById('submitBtn');
+    const icon = document.getElementById('submitIcon');
+    const text = document.getElementById('submitText');
+    btn.disabled = true;
+    btn.style.opacity = '0.8';
+    icon.className = 'fas fa-spinner fa-spin';
+    text.textContent = 'Saving… please wait';
+});
 
 // ── INIT ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
