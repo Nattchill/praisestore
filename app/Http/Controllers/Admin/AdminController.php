@@ -112,7 +112,7 @@ class AdminController extends Controller
             'stock'       => 'required|integer|min:0',
             'featured'    => 'boolean',
             'is_active'   => 'boolean',
-            'image_file'  => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'image_file'  => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
             'image'       => 'nullable|string',
         ]);
 
@@ -151,7 +151,7 @@ class AdminController extends Controller
             'stock'       => 'required|integer|min:0',
             'featured'    => 'boolean',
             'is_active'   => 'boolean',
-            'image_file'  => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'image_file'  => 'nullable|image|mimes:jpeg,png,jpg,webp|max:10240',
             'image'       => 'nullable|string',
         ]);
 
