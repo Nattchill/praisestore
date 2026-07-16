@@ -29,6 +29,10 @@
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
+        <env name="CLOUDINARY_URL" value="cloudinary://test:test@test"/>
+        <env name="GOOGLE_CLIENT_ID" value="test"/>
+        <env name="GOOGLE_CLIENT_SECRET" value="test"/>
+        <env name="GOOGLE_REDIRECT_URI" value="http://localhost/auth/google/callback"/>
         <env name="PULSE_ENABLED" value="false"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="NIGHTWATCH_ENABLED" value="false"/>
