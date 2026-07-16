@@ -3,7 +3,7 @@
 > **EWA408510 – E-Commerce and Web Application | Final Project**
 > Faculty of Computing and Information Sciences, UNILAK | Academic Year 2025–2026
 
-[![CI/CD Pipeline](https://github.com/YOUR_USERNAME/praisestore/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/YOUR_USERNAME/praisestore/actions)
+[![CI/CD Pipeline](https://github.com/Nattchill/praisestore/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/Nattchill/praisestore/actions)
 [![Laravel](https://img.shields.io/badge/Laravel-12.x-FF2D20?logo=laravel&logoColor=white)](https://laravel.com)
 [![PHP](https://img.shields.io/badge/PHP-8.2-777BB4?logo=php&logoColor=white)](https://php.net)
 [![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql&logoColor=white)](https://mysql.com)
@@ -39,9 +39,9 @@ The platform is built on **Laravel 12** with **Jetstream + Livewire**, styled wi
 
 | | |
 |---|---|
-| **Live URL** | `https://praisestore.example.com` |
-| **GitHub** | `https://github.com/YOUR_USERNAME/praisestore` |
+| **GitHub** | [github.com/Nattchill/praisestore](https://github.com/Nattchill/praisestore) |
 | **Stack** | Laravel 12 · PHP 8.2 · MySQL 8.0 · Blade · Vanilla CSS |
+| **Image Storage** | Cloudinary (cloud-hosted product images) |
 
 ---
 
@@ -66,6 +66,7 @@ PraiseStore solves all of these by providing a dedicated, locally-focused e-comm
 - Support local payment methods (Cash on Delivery, Mobile Money)
 - Deliver a secure admin dashboard for complete store management
 - Integrate Google OAuth for frictionless sign-in
+- Store product images on Cloudinary for scalable cloud delivery
 - Containerize with Docker and automate deployments with CI/CD
 
 ---
@@ -76,7 +77,7 @@ PraiseStore solves all of these by providing a dedicated, locally-focused e-comm
 
 | Feature | Description |
 |---|---|
-| **Homepage** | Hero banner, featured products, new arrivals, category grid |
+| **Homepage** | Hero slider, price ticker, featured products, new arrivals, category grid |
 | **Shop** | Product listing with category filter, search bar, sort options |
 | **Product Detail** | Full product info, image, related products, add-to-cart |
 | **Shopping Cart** | Add / remove / update quantities, auto-calculated totals |
@@ -86,19 +87,19 @@ PraiseStore solves all of these by providing a dedicated, locally-focused e-comm
 | **Authentication** | Register, login, profile management via Jetstream |
 | **Google OAuth** | One-click sign-in with Google via Laravel Socialite |
 | **Welcome Splash** | Personalized animated splash screen after login |
-| **Live Chat Bot** | Floating help widget with AI-style keyword-based auto-replies |
+| **Live Chat Bot** | Floating help widget with keyword-based auto-replies |
 
 ### 🔧 Admin Features
 
 | Feature | Description |
 |---|---|
-| **Dashboard** | Revenue stats, order counts, recent orders overview |
-| **Products** | Create, edit, delete products with image upload |
+| **Dashboard** | Revenue stats, order counts, monthly revenue chart, top products |
+| **Products** | Create, edit, delete products with Cloudinary image upload |
 | **Categories** | Manage product categories with slugs and images |
 | **Orders** | View all orders, update order status (Pending → Delivered) |
 | **Customers** | View customer list, toggle account status |
-| **Payments** | Track payment status per order |
-| **Reports** | Sales and revenue reporting |
+| **Payments** | Track payment status per order (MoMo / Cash on Delivery) |
+| **Reports** | Sales and revenue reporting with date range filter |
 | **Settings** | Store settings and admin password management |
 | **Chat Monitor** | Read-only view of all customer bot conversations |
 
@@ -117,6 +118,7 @@ PraiseStore solves all of these by providing a dedicated, locally-focused e-comm
 | Frontend | Blade Templates + Vanilla CSS | — |
 | Icons | Font Awesome | 6.x CDN |
 | Database | MySQL | 8.0 |
+| Image Storage | Cloudinary | REST API |
 | Containerization | Docker + Docker Compose | latest |
 | CI/CD | GitHub Actions | — |
 | Web Server | Nginx + PHP-FPM | Alpine |
@@ -150,6 +152,11 @@ PraiseStore solves all of these by providing a dedicated, locally-focused e-comm
 │                  MySQL 8.0                     │
 │  users · categories · products · orders        │
 │  order_items · chat_messages                   │
+└────────────────────────────────────────────────┘
+                      │
+┌─────────────────────▼─────────────────────────┐
+│              Cloudinary CDN                    │
+│       (product & category images)              │
 └────────────────────────────────────────────────┘
 ```
 
@@ -192,7 +199,7 @@ orders ◄───────────────────────�
   id, order_number, user_id (FK nullable),                  1:N
   customer_name, customer_email, customer_phone,            │
   shipping_address, city, subtotal, shipping,               │
-  total, status, payment_method,                            │
+  total, status, payment_method, momo_phone,                │
   payment_status, created_at                                │
        │                                                    ▼
        │ 1:N                                         chat_messages
@@ -209,6 +216,26 @@ order_items                                            message, is_admin,
 Pending → Processing → Shipped → Delivered
                               ↘ Cancelled
 ```
+
+### Migrations (15 files)
+
+| File | Purpose |
+|---|---|
+| `000000_create_users_table` | Core users table |
+| `000001_create_cache_table` | Laravel cache |
+| `000002_create_jobs_table` | Queue jobs |
+| `000001_create_categories_table` | Product categories |
+| `000002_create_products_table` | Products catalog |
+| `000003_create_orders_table` | Customer orders |
+| `000004_create_order_items_table` | Order line items |
+| `000005_add_is_admin_to_users` | Admin flag |
+| `000006_add_phone_to_users` | Phone field |
+| `add_two_factor_columns_to_users` | 2FA support |
+| `create_passkeys_table` | Passkey auth |
+| `create_personal_access_tokens_table` | Sanctum tokens |
+| `add_payment_fields_to_orders` | MoMo / payment status |
+| `add_google_id_to_users` | Google OAuth |
+| `create_chat_messages_table` | Chat bot messages |
 
 ---
 
@@ -248,19 +275,20 @@ praisestore/
 │   ├── admin/                                # Admin panel views
 │   ├── customer/                             # Customer dashboard views
 │   ├── auth/
-│   │   ├── login.blade.php                   # Custom standalone login
-│   │   └── register.blade.php                # Custom standalone register
+│   │   ├── login.blade.php
+│   │   └── register.blade.php
 │   ├── home.blade.php
 │   ├── shop.blade.php
 │   ├── product.blade.php
 │   ├── cart.blade.php
 │   ├── checkout.blade.php
 │   ├── order-confirmation.blade.php
-│   └── welcome-splash.blade.php              # Post-login splash screen
+│   └── welcome-splash.blade.php
 ├── routes/web.php
 ├── docker/
 │   ├── nginx.conf
-│   └── supervisord.conf
+│   ├── supervisord.conf
+│   └── start.sh
 ├── .github/workflows/ci-cd.yml
 ├── Dockerfile
 └── docker-compose.yml
@@ -282,7 +310,7 @@ praisestore/
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/YOUR_USERNAME/praisestore.git
+git clone https://github.com/Nattchill/praisestore.git
 cd praisestore
 
 # 2. Install PHP dependencies
@@ -296,9 +324,12 @@ cp .env.example .env
 php artisan key:generate
 
 # 5. Configure your database in .env
-#    DB_DATABASE=praisestore
-#    DB_USERNAME=root
-#    DB_PASSWORD=
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=praisestore
+DB_USERNAME=root
+DB_PASSWORD=
 
 # 6. Run migrations and seed sample data
 php artisan migrate --seed
@@ -312,13 +343,13 @@ php artisan serve
 
 Visit: **http://localhost:8000**
 
-### One-Command Setup (via Composer script)
+### One-Command Setup
 
 ```bash
 composer run setup
 ```
 
-This runs install → .env copy → key:generate → migrate → npm install → npm build automatically.
+Runs install → .env copy → key:generate → migrate → npm install → npm build automatically.
 
 ### Development Mode (with hot reload)
 
@@ -331,6 +362,8 @@ Starts Laravel server, queue worker, log watcher, and Vite dev server concurrent
 ---
 
 ## 10. Docker Setup
+
+The Docker setup uses **PostgreSQL 16** (production) and **pgAdmin 4** for DB management.
 
 ### Start All Services
 
@@ -347,15 +380,15 @@ docker-compose exec app php artisan migrate --seed
 | Service | URL |
 |---|---|
 | PraiseStore App | http://localhost:8080 |
-| phpMyAdmin | http://localhost:8081 |
+| pgAdmin | http://localhost:8081 |
 
 ### Docker Services
 
 | Container | Image | Purpose |
 |---|---|---|
 | `praisestore_app` | Custom (PHP 8.2-FPM Alpine + Nginx) | Laravel app + web server |
-| `praisestore_db` | `mysql:8.0` | Database |
-| `praisestore_pma` | `phpmyadmin:latest` | DB management UI |
+| `praisestore_db` | `postgres:16-alpine` | Database |
+| `praisestore_pma` | `dpage/pgadmin4:latest` | DB management UI |
 
 ### Useful Docker Commands
 
@@ -452,8 +485,12 @@ Push to main / develop
 | GET | `/welcome` | Post-login splash screen |
 | GET | `/account` | Customer dashboard |
 | GET | `/account/profile` | Profile page |
+| POST | `/account/profile` | Update profile info |
+| POST | `/account/profile/avatar` | Update profile photo |
+| POST | `/account/profile/password` | Change password |
 | GET | `/account/orders` | Order history |
 | GET | `/account/orders/track/{number}` | Track specific order |
+| POST | `/account/orders/search` | Search orders |
 | POST | `/chat/send` | Send chat message (bot replies instantly) |
 | GET | `/chat/fetch` | Fetch conversation history |
 | GET | `/chat/unread` | Get unread message count |
@@ -463,16 +500,27 @@ Push to main / develop
 | Method | URI | Description |
 |---|---|---|
 | GET | `/admin` | Admin dashboard |
-| GET/POST | `/admin/products` | List / create products |
-| GET/PUT/DELETE | `/admin/products/{id}` | Edit / delete product |
+| GET | `/admin/products` | List products |
+| GET/POST | `/admin/products/create` | Create product |
+| GET/PUT | `/admin/products/{id}/edit` | Edit product |
+| DELETE | `/admin/products/{id}` | Delete product |
 | GET/POST | `/admin/categories` | List / create categories |
+| PUT | `/admin/categories/{id}` | Update category |
+| DELETE | `/admin/categories/{id}` | Delete category |
 | GET | `/admin/orders` | All orders |
+| GET | `/admin/orders/{id}` | Order detail |
 | PATCH | `/admin/orders/{id}/status` | Update order status |
 | GET | `/admin/customers` | Customer list |
+| GET | `/admin/customers/{id}` | Customer detail |
+| PATCH | `/admin/customers/{id}/toggle` | Toggle customer status |
 | GET | `/admin/payments` | Payment tracking |
+| PATCH | `/admin/payments/{id}/status` | Update payment status |
 | GET | `/admin/reports` | Sales reports |
-| GET | `/admin/settings` | Store settings |
+| GET/POST | `/admin/settings` | Store settings |
+| POST | `/admin/settings/password` | Admin password change |
 | GET | `/admin/chat/conversations` | Chat monitor (read-only) |
+| GET | `/admin/chat/fetch/{userId}` | Fetch user conversation |
+| GET | `/admin/chat/unread` | Unread chat count |
 
 ---
 
@@ -501,7 +549,7 @@ APP_NAME=PraiseStore
 APP_ENV=local
 APP_URL=http://localhost:8000
 
-# Database
+# Database (MySQL for local dev)
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
@@ -513,6 +561,15 @@ DB_PASSWORD=
 GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
 GOOGLE_CLIENT_SECRET=your-client-secret
 GOOGLE_REDIRECT_URI=http://localhost:8000/auth/google/callback
+
+# Cloudinary (image uploads)
+# Option 1 — single URL (recommended)
+CLOUDINARY_URL=cloudinary://api_key:api_secret@cloud_name
+
+# Option 2 — individual keys
+CLOUDINARY_CLOUD_NAME=your-cloud-name
+CLOUDINARY_API_KEY=your-api-key
+CLOUDINARY_API_SECRET=your-api-secret
 
 # Mail (for password reset, order emails)
 MAIL_MAILER=smtp
