@@ -61,7 +61,7 @@ jobs:
           echo 'CLOUDINARY_URL=cloudinary://test:test@test' >> .env
           echo 'GOOGLE_CLIENT_ID=test' >> .env
           echo 'GOOGLE_CLIENT_SECRET=test' >> .env
-          echo 'GOOGLE_REDIRECT_URI=http://localhost/auth/google/callback' >> .env
+          echo 'GOOGLE_REDIRECT_URI=https://praisestore.onrender.com/auth/google/callback' >> .env
 
       - name: Install Composer dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader

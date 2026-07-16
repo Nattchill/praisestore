@@ -8,6 +8,7 @@
 [![PHP](https://img.shields.io/badge/PHP-8.2-777BB4?logo=php&logoColor=white)](https://php.net)
 [![MySQL](https://img.shields.io/badge/MySQL-8.0-4479A1?logo=mysql&logoColor=white)](https://mysql.com)
 [![Docker](https://img.shields.io/badge/Docker-Compose-2496ED?logo=docker&logoColor=white)](https://docker.com)
+[![Live](https://img.shields.io/badge/Live-praisestore.onrender.com-22c55e?logo=render&logoColor=white)](https://praisestore.onrender.com)
 [![License](https://img.shields.io/badge/License-MIT-22c55e)](LICENSE)
 
 ---
@@ -40,6 +41,7 @@ The platform is built on **Laravel 12** with **Jetstream + Livewire**, styled wi
 | | |
 |---|---|
 | **GitHub** | [github.com/Nattchill/praisestore](https://github.com/Nattchill/praisestore) |
+| **Live URL** | [praisestore.onrender.com](https://praisestore.onrender.com) |
 | **Stack** | Laravel 12 · PHP 8.2 · MySQL 8.0 · Blade · Vanilla CSS |
 | **Image Storage** | Cloudinary (cloud-hosted product images) |
 
@@ -341,7 +343,9 @@ npm run build
 php artisan serve
 ```
 
-Visit: **http://localhost:8000**
+Visit: **https://praisestore.onrender.com**
+
+> For local development use `http://localhost:8000`
 
 ### One-Command Setup
 
@@ -379,7 +383,7 @@ docker-compose exec app php artisan migrate --seed
 
 | Service | URL |
 |---|---|
-| PraiseStore App | http://localhost:8080 |
+| PraiseStore App | https://praisestore.onrender.com |
 | pgAdmin | http://localhost:8081 |
 
 ### Docker Services
@@ -526,7 +530,7 @@ Push to main / develop
 
 ## 13. Admin Access
 
-After running `php artisan migrate --seed`, log in at `/login`:
+After running `php artisan migrate --seed`, log in at `https://praisestore.onrender.com/login`:
 
 | Field | Value |
 |---|---|
@@ -546,8 +550,8 @@ Key variables to configure in your `.env` file:
 ```env
 # Application
 APP_NAME=PraiseStore
-APP_ENV=local
-APP_URL=http://localhost:8000
+APP_ENV=production
+APP_URL=https://praisestore.onrender.com
 
 # Database (MySQL for local dev)
 DB_CONNECTION=mysql
@@ -560,7 +564,7 @@ DB_PASSWORD=
 # Google OAuth (Google Cloud Console)
 GOOGLE_CLIENT_ID=your-client-id.apps.googleusercontent.com
 GOOGLE_CLIENT_SECRET=your-client-secret
-GOOGLE_REDIRECT_URI=http://localhost:8000/auth/google/callback
+GOOGLE_REDIRECT_URI=https://praisestore.onrender.com/auth/google/callback
 
 # Cloudinary (image uploads)
 # Option 1 — single URL (recommended)
