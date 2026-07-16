@@ -72,7 +72,7 @@ jobs:
         run: npm run build
 
       - name: Run PHPUnit tests
-        run: php artisan test --parallel
+        run: php artisan test --parallel --stop-on-failure
 
   # ─── DOCKER BUILD ────────────────────────────────────────────────
   docker:

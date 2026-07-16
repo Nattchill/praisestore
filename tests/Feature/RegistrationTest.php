@@ -48,6 +48,6 @@ class RegistrationTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
-        $response->assertRedirect('/welcome');
+        $response->assertRedirect('/dashboard');
     }
 }
