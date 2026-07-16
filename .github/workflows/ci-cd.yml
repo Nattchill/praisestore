@@ -26,7 +26,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
 
       - name: Create .env for CI
@@ -72,7 +72,7 @@ jobs:
         run: npm run build
 
       - name: Run PHPUnit tests
-        run: php artisan test --parallel --stop-on-failure
+        run: php artisan test --stop-on-failure
 
   # ─── DOCKER BUILD ────────────────────────────────────────────────
   docker:
