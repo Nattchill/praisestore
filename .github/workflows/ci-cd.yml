@@ -50,11 +50,18 @@ jobs:
 
       - name: Configure test environment
         run: |
-          sed -i 's/DB_DATABASE=.*/DB_DATABASE=praisestore_test/' .env
-          sed -i 's/DB_USERNAME=.*/DB_USERNAME=praisestore/' .env
-          sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=secret/' .env
+          sed -i 's/DB_CONNECTION=.*/DB_CONNECTION=mysql/' .env
+          sed -i 's/# DB_HOST=.*/DB_HOST=127.0.0.1/' .env
+          sed -i 's/# DB_PORT=.*/DB_PORT=3306/' .env
+          sed -i 's/# DB_DATABASE=.*/DB_DATABASE=praisestore_test/' .env
+          sed -i 's/# DB_USERNAME=.*/DB_USERNAME=praisestore/' .env
+          sed -i 's/# DB_PASSWORD=.*/DB_PASSWORD=secret/' .env
           sed -i 's/SESSION_DRIVER=.*/SESSION_DRIVER=array/' .env
           sed -i 's/CACHE_STORE=.*/CACHE_STORE=array/' .env
+          echo 'CLOUDINARY_URL=cloudinary://test:test@test' >> .env
+          echo 'GOOGLE_CLIENT_ID=test' >> .env
+          echo 'GOOGLE_CLIENT_SECRET=test' >> .env
+          echo 'GOOGLE_REDIRECT_URI=http://localhost/auth/google/callback' >> .env
 
       - name: Install Composer dependencies
         run: composer install --no-interaction --prefer-dist --optimize-autoloader

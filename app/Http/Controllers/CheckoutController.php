@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\OrderConfirmation;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Product;
 use App\Services\CartService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 
 class CheckoutController extends Controller
@@ -69,9 +72,16 @@ class CheckoutController extends Controller
                 'quantity'     => $item['quantity'],
                 'subtotal'     => $item['price'] * $item['quantity'],
             ]);
+            Product::where('id', $item['id'])->decrement('stock', $item['quantity']);
         }
 
         $this->cart->clear();
+
+        try {
+            Mail::to($order->customer_email)->send(new OrderConfirmation($order->load('items')));
+        } catch (\Exception) {
+            // Mail failure must not block the order
+        }
 
         return redirect()->route('order.confirmation', $order->order_number);
     }
