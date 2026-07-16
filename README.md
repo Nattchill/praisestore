@@ -32,6 +32,52 @@
 
 ---
 
+## 📸 Screenshots
+
+### 🏠 Homepage
+![Homepage](screenshots/Home.jpg.png)
+
+### 🔐 Login
+![Login](screenshots/Login.jpg.png)
+
+### 🛒 Cart Page
+![Cart](screenshots/Cart%20page.jpg.png)
+
+### 💳 Checkout
+![Checkout](screenshots/Checkup.jpg.png)
+
+### 💬 Live Chat
+![Live Chat](screenshots/Live-chat.jpg.png)
+
+### 👤 User Dashboard
+![User Dashboard](screenshots/User%20dashboard.jpg.png)
+
+### 👤 User Profile
+![User Profile](screenshots/User%20profile.jpg.png)
+
+### 🔧 Admin Dashboard
+![Admin](screenshots/Admin.jpg.png)
+
+### 📋 Order Management
+![Orders](screenshots/Order-dmanagement.jpg.png)
+
+### 👥 Customer List
+![Customers](screenshots/Customer-list.jpg.png)
+
+### 💰 Payment Management
+![Payments](screenshots/Payment-management.jpg.png)
+
+### 💳 Payment
+![Payment](screenshots/Payment.jpg.png)
+
+### 📈 Reports
+![Reports](screenshots/Report.jpg.png)
+
+### ⚙️ CI/CD Action Workflow
+![CI/CD](screenshots/Action-Workflow.jpg.png)
+
+---
+
 ## 1. Introduction
 
 **PraiseStore** is a full-featured e-commerce fashion platform built for the Rwandan market. It enables customers to browse, search, and purchase clothing and accessories online, while providing administrators with a complete management dashboard.
