@@ -10,23 +10,24 @@
     .page-banner .breadcrumb a{color:#ffd6e7;text-decoration:underline}
 
     /* ── LAYOUT ── */
-    .cart-layout{display:grid;grid-template-columns:1fr 340px;gap:28px;align-items:start;padding-bottom:60px}
+    .cart-layout{display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start;padding-bottom:60px}
 
     /* ── CART TABLE CARD ── */
     .cart-card{background:#fff;border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 2px 12px rgba(193,53,132,.06)}
-    .cart-card-header{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 40px;gap:12px;padding:13px 20px;background:var(--light);border-bottom:1px solid var(--border)}
-    .cart-card-header span{font-size:12px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.6px}
+    .cart-card-header{display:grid;grid-template-columns:minmax(0,2fr) 120px 140px 120px 44px;gap:8px;padding:12px 20px;background:var(--light);border-bottom:1px solid var(--border)}
+    .cart-card-header span{font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.6px}
     .cart-card-header span:not(:first-child){text-align:center}
 
     /* ── CART ROW ── */
-    .cart-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr 40px;gap:12px;align-items:center;padding:16px 20px;border-bottom:1px solid #fdf0f8;transition:background .15s}
+    .cart-row{display:grid;grid-template-columns:minmax(0,2fr) 120px 140px 120px 44px;gap:8px;align-items:center;padding:14px 20px;border-bottom:1px solid #fdf0f8;transition:background .15s}
     .cart-row:last-child{border-bottom:none}
     .cart-row:hover{background:#fffafd}
 
     /* Product cell */
-    .cart-product{display:flex;align-items:center;gap:14px}
-    .cart-product-img{width:72px;height:72px;border-radius:10px;object-fit:cover;border:1px solid var(--border);flex-shrink:0;background:#f9f0f5}
-    .cart-product-info h4{font-size:14px;font-weight:600;color:var(--dark);margin-bottom:3px;line-height:1.4}
+    .cart-product{display:flex;align-items:center;gap:12px;min-width:0}
+    .cart-product-img{width:68px;height:68px;min-width:68px;border-radius:10px;object-fit:cover;border:1px solid var(--border);flex-shrink:0;background:#f9f0f5}
+    .cart-product-info{min-width:0}
+    .cart-product-info h4{font-size:13px;font-weight:600;color:var(--dark);margin-bottom:3px;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .cart-product-info span{font-size:12px;color:var(--gray)}
 
     /* Price / subtotal cells */
@@ -80,18 +81,39 @@
     .btn-shop:hover{opacity:.9}
 
     /* ── RESPONSIVE ── */
-    @media(max-width:960px){
+    @media(max-width:1024px){
+        .cart-layout{grid-template-columns:1fr 280px}
+    }
+    @media(max-width:860px){
         .cart-layout{grid-template-columns:1fr}
         .cart-summary{position:static}
+        .cart-card-header{grid-template-columns:minmax(0,2fr) 100px 120px 100px 36px}
+        .cart-row{grid-template-columns:minmax(0,2fr) 100px 120px 100px 36px}
     }
-    @media(max-width:640px){
+    @media(max-width:600px){
         .cart-card-header{display:none}
-        .cart-row{grid-template-columns:1fr;gap:10px;padding:14px 16px}
-        .cart-cell{text-align:left;display:flex;justify-content:space-between;align-items:center;font-size:13px}
-        .cart-cell::before{content:attr(data-label);font-size:11px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.5px}
-        .cart-cell.subtotal{font-size:15px}
+        .cart-row{
+            grid-template-columns:1fr;
+            gap:10px;
+            padding:14px 16px;
+            border-bottom:2px solid #fdf0f8;
+        }
+        .cart-product{margin-bottom:4px}
+        .cart-product-img{width:60px;height:60px;min-width:60px}
+        .cart-cell{
+            display:flex;justify-content:space-between;
+            align-items:center;font-size:13px;
+            padding:4px 0;border-bottom:1px dashed #fdf0f8;
+        }
+        .cart-cell:last-of-type{border-bottom:none}
+        .cart-cell::before{
+            content:attr(data-label);
+            font-size:11px;font-weight:700;
+            color:var(--gray);text-transform:uppercase;letter-spacing:.5px;
+        }
+        .cart-cell.subtotal{font-size:14px;border-bottom:none}
         .qty-wrap{justify-content:flex-end}
-        .remove-btn{margin:0}
+        .remove-btn{margin:0;margin-left:auto;display:flex}
         .cart-footer{flex-direction:column;gap:10px;text-align:center}
     }
 </style>
@@ -133,9 +155,10 @@
 
                 {{-- Product --}}
                 <div class="cart-product">
-                    <img src="{{ $item['image'] ?? 'https://via.placeholder.com/72' }}"
+                    <img src="{{ $item['image'] ?? 'https://via.placeholder.com/68' }}"
                          alt="{{ $item['name'] }}"
-                         class="cart-product-img">
+                         class="cart-product-img"
+                         style="width:68px;height:68px;min-width:68px;object-fit:cover">
                     <div class="cart-product-info">
                         <h4>{{ $item['name'] }}</h4>
                         <span>RWF {{ number_format($item['price']) }} each</span>
